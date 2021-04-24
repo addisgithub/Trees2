@@ -7,8 +7,9 @@ set(DOXYGEN_HTML_OUPUT_DIR "../docs")
 set(DOXYGEN_IN_FILE "Doxyfile.in")
 # Be sure to change the executable name, 
 # and change the input file name if it is different.
-add_executable(binTree ${PROJECT_SOURCE_DIR}/main.cpp)
+# add_executable(binTree ${PROJECT_SOURCE_DIR}/main.cpp)
 add_executable(binSearch ${PROJECT_SOURCE_DIR}/binSearch.cpp)
+add_executable(main ${PROJECT_SOURCE_DIR}/main.cpp)
 
 include(CTest)
 enable_testing()

@@ -2,37 +2,39 @@
  * @file binSearch.cpp
  * @brief This is a demonstration of binary search trees.
  * @details This is a demo from CPTR 227 class
- * @author Seth McNeill
- * @date 2021 March 02
- * 
+ * @author Addis Bogale
+ * @date 2021 March 23
+ *
  */
-
+#include <algorithm>
 #include <iostream>
 #include <queue>
+#include <random>
+#include <chrono>
 using namespace std;
 
 /**
  * Binary Tree Node
- * 
+ *
  * This is from Open Data Structures in C++ by Pat Morin
  */
 class BTNode {
 public:
-  BTNode* left;
-  BTNode* right;
-  BTNode* parent;
+    BTNode* left;
+    BTNode* right;
+    BTNode* parent;
 
-  /**
-   * BTNode constructor
-   */
-  BTNode(int dataVal) {
-      cout << "name = " << name << endl;
-      left = NULL;
-      right = NULL;
-      parent = NULL;
-      objName = name++;
-      data = dataVal;
-  }
+    /**
+     * BTNode constructor
+     */
+    BTNode(int dataVal) {
+        cout << "name = " << name << endl;
+        left = NULL;
+        right = NULL;
+        parent = NULL;
+        objName = name++;
+        data = dataVal;
+    }
 
     /**
      * This reports the node's name
@@ -49,9 +51,9 @@ public:
     }
 
 private:
-  char objName; // The object number created
-  static char name;
-  int data; // Data that is stored in the node
+    char objName; // The object number created
+    static char name;
+    int data; // Data that is stored in the node
 };
 
 
@@ -59,7 +61,7 @@ char BTNode::name = 'A'; // initialize static variable
 
 /**
  * This function adds a node to a binary search tree.
- * 
+ *
  * @param rootNode is the pointer to the tree's root node
  * @param n is the node to add
  * @returns pointer to rootNode if successful, NULL otherwise
@@ -67,25 +69,29 @@ char BTNode::name = 'A'; // initialize static variable
 BTNode* addNode(BTNode* rootNode, BTNode* n) {
     BTNode* prev = NULL;
     BTNode* w = rootNode;
-    if(rootNode == NULL) { // starting an empty tree
+    if (rootNode == NULL) { // starting an empty tree
         rootNode = n;
-    } else {
+    }
+    else {
         // Find the node n belongs under, prev, n's new parent
-        while(w != NULL) {
+        while (w != NULL) {
             prev = w;
-            if(n->nodeData() < w->nodeData()){
+            if (n->nodeData() < w->nodeData()) {
                 w = w->left;
-            } else if(n->nodeData() > w->nodeData()) {
+            }
+            else if (n->nodeData() > w->nodeData()) {
                 w = w->right;
-            } else { // data already in the tree
+            }
+            else { // data already in the tree
                 return(NULL);
             }
         }
         // now prev should contain the node that should be n's parent
         // Add n to prev
-        if(n->nodeData() < prev->nodeData()) {
+        if (n->nodeData() < prev->nodeData()) {
             prev->left = n;
-        } else {
+        }
+        else {
             prev->right = n;
         }
     }
@@ -95,16 +101,17 @@ BTNode* addNode(BTNode* rootNode, BTNode* n) {
 
 /**
  * Adds a new node with the passed data value
- * 
+ *
  * @param rootNode pointer to root node
  * @param dataval an integer for the new node's data
  * @returns pointer to root node or NULL if not successful
  */
 BTNode* addNode(BTNode* rootNode, int dataval) {
     BTNode* newNode = new BTNode(dataval);
-    if(addNode(rootNode, newNode) == NULL) {
+    if (addNode(rootNode, newNode) == NULL) {
         cout << dataval << " already in tree" << endl;
-    } else {
+    }
+    else {
         cout << dataval << " succesfully added" << endl;
     }
     return(rootNode);
@@ -112,22 +119,72 @@ BTNode* addNode(BTNode* rootNode, int dataval) {
 
 /**
  * This generates a simple tree to play with
- * 
+ *
  * It is a bit of a hack.
  */
 BTNode* genExampleTree(BTNode* root) {
     //int inData[] = {1,2,3,4,5,6,7};
-    int inData[] = {4,6,5,7,2,1,3};
-    int classData[] = {1,3,4,5,6,7,8,9,11,12,13,14};
-    for(int ii = 0; ii < 7; ii++) {
+    int inData[] = { 4,6,5,7,2,1,3 };
+    int classData[] = { 1,3,4,5,6,7,8,9,11,12,13,14 };
+    for (int ii = 0; ii < 7; ii++) {
         addNode(root, inData[ii]);
     }
     return root;
 }
 
+
+BTNode* genTree(vector <int> value) {
+    BTNode* head = new BTNode(value[0]);
+    for (int ii = 1; ii < value.size(); ii++) {
+        addNode(head, value[ii]);
+    }
+
+    return head;
+}
+
+
+int height(BTNode* u) {
+    if (u == NULL) {
+        cout << "Reached NULL end of branch" << endl;
+        return(-1);
+    }
+    //cout << "Calculating the height of node " << u->nodeNum() << endl;
+    return(1 + max(height(u->left), height(u->right)));
+    //cout << (1 + max(height(u->left), height(u->right)));
+}
+
+// EXTRA CREDIT 
+int minHeight(BTNode* u){
+    if (u == NULL) {
+        cout << "Reached NULL end of branch" << endl;
+        return(-1);
+    }
+    //cout << "Calculating the height of node " << u->nodeNum() << endl;
+    return(1 + min(height(u->left), height(u->right)));
+    //cout << (1 + max(height(u->left), height(u->right)));
+
+}
+void randTreeTest(int M, int N) {
+    unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+    for (int ii = 0; ii < M; ii++) {
+        BTNode* head = new BTNode(5);
+        vector <int> value;
+        for (int i = 0; i < N; i++) {
+            value.push_back(i);
+        }
+        default_random_engine generator(seed);
+        shuffle(value.begin(), value.end(), generator);
+        height(head);
+        minHeight(head);
+    }
+
+
+}
+
+
 /**
  * Prints out a representtation of a binary search tree
- * 
+ *
  * @param rootNode is a pointer to the root node
  */
 void printTree(BTNode* rootNode) {
@@ -137,16 +194,16 @@ void printTree(BTNode* rootNode) {
 
     todo.push(rootNode);
 
-    while(!todo.empty()) {
+    while (!todo.empty()) {
         cur = todo.front();
         // Print current node
         cout << cur->nodeName() << ':' << cur->nodeData() << '\t';
         // add cur->left to queue
-        if(cur->left != NULL) {
+        if (cur->left != NULL) {
             todo.push(cur->left);
         }
         // add cur->right to queue
-        if(cur->right != NULL) {
+        if (cur->right != NULL) {
             todo.push(cur->right);
         }
         // remove cur from queue
@@ -157,35 +214,35 @@ void printTree(BTNode* rootNode) {
 
 /**
  * Print a binary tree
- * 
+ *
  * This example is modified from:
  * https://stackoverflow.com/a/51730733
- * 
+ *
  * @param prefix is a string of characters to start the line with
  * @param node is the current node being printed
  * @param isLeft bool true if the node is a left node
  */
 void printBT(const string& prefix, BTNode* node, bool isLeft)
 {
-    if( node != NULL )
+    if (node != NULL)
     {
         cout << prefix;
 
-        cout << (isLeft ? "├──" : "└──" );
+        cout << (isLeft ? "|--" : "--");
 
         // print the value of the node
         //cout << node->nodeName() << ':' << node->nodeData() << std::endl;
         cout << node->nodeData() << std::endl;
 
         // enter the next tree level - left and right branch
-        printBT( prefix + (isLeft ? "│   " : "    "), node->left, true);
-        printBT( prefix + (isLeft ? "│   " : "    "), node->right, false);
+        printBT(prefix + (isLeft ? "|   " : "    "), node->left, true);
+        printBT(prefix + (isLeft ? "|   " : "    "), node->right, false);
     }
 }
 
 /**
  * An overload to simplify calling printBT
- * 
+ *
  * @param node is the root node of the tree to be printed
  */
 void printBT(BTNode* node)
@@ -199,4 +256,7 @@ int main(int, char**) {
     genExampleTree(rootNode);
     printBT(rootNode);
     printTree(rootNode);
+    randTreeTest(100, 26);
+    // height(rootNode);
+
 }
