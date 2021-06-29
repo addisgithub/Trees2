@@ -1,7 +1,6 @@
 /**
  * @file binSearch.cpp
  * @brief This is a demonstration of binary search trees.
- * @details This is a demo from CPTR 227 class
  * @author Addis Bogale
  * @date 2021 March 23
  *
